@@ -78,6 +78,7 @@
 </div>
 <script>
     $(function () {
+        //To fetch all the products on page load
         GetAllProducts();
     });
     //Ajax call to controller to update an existing product or create a new product
@@ -190,6 +191,7 @@
             }
         });
     }
+    //To Reset all input elements
     function Reset() {
       $("#inputId").removeAttr("disabled");
         $("#inputId").val(null);

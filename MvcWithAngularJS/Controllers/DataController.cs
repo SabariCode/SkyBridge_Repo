@@ -13,7 +13,7 @@ namespace MvcWithAngularJS.Controllers
         {
 
         }
-
+        //To validate the login credentials with database
         public JsonResult UserLogin(LoginData login)
         {
             try
@@ -38,12 +38,12 @@ namespace MvcWithAngularJS.Controllers
                 throw;
             }
         }
-
+        //View for Add Product Page
         public ActionResult AddProduct()
         {
             return View();
         }
-
+        //To Add a new product to database or update an existing product
         public JsonResult SaveProduct(ProductData product)
         {
             Product newproduct = new Product();
@@ -94,7 +94,7 @@ namespace MvcWithAngularJS.Controllers
                 throw;
             }
         }
-
+        //To delete a product from the database
         public JsonResult DeleteProduct(ProductData product)
         {
             bool deleteSuccess = false;
@@ -123,11 +123,12 @@ namespace MvcWithAngularJS.Controllers
                 throw;
             }
         }
-
+       
         public ActionResult Display()
         {
             return View();
         }
+        //To fetch all products from the database
         public JsonResult getData()
         {
             List<Product> productList = new List<Product>();
