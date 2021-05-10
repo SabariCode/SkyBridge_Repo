@@ -1,0 +1,200 @@
+﻿
+
+@{
+    ViewBag.Title = "Product";
+}
+
+<style>
+    input {
+        padding: 5px;
+        border: 1px solid black;
+        margin-left: 10px;
+        margin-bottom: 10px;
+    }
+
+    .align {
+        margin-left: 10px;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+<h2 class="" style="text-align:center;background-color:aquamarine"><b>Add/Edit Product</b></h2>
+<div>
+    <form novalidate style="align-content:center" name="lf">
+        <table class="table-responsive">
+            <tr>
+                <td>Product Id : </td>
+                <td>
+                    <input type="number" id="inputId" min="1" name="cname" class="form-control" placeholder="ProductId(unique)" required autofocus />
+                    <span class="error hidden text-center align" id="errorId">Product ID required</span>
+                </td>
+            </tr>
+            <tr>
+            <tr>
+                <td>Product Name : </td>
+                <td>
+                    <input type="text" class="form-control" id="inputName" placeholder="ProductName" required />
+                    <span class="error hidden text-center align" id="errorName">Product Name required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Availability : </td>
+                <td>
+                    <input type="number" min="0" class="form-control" id="inputCount" placeholder="No.of Products" required />
+                    <span class="error hidden text-center align" id="errorCount">No.of Products required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;&nbsp;</td>
+
+                <td>
+                    <a href="#" onclick="SaveProduct()" class="btn btn-primary align">
+                        Save
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<br />
+<br />
+<div>
+    <h2 class="bg-info" style="text-align:center;background-color:aquamarine"><b>Product List</b></h2>
+    <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Availability</th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody id="trDiv"></tbody>
+    </table>
+</div>
+<script>
+    $(function () {
+        GetAllProducts();
+    });
+    //Ajax call to controller to update an existing product or create a new product
+    function SaveProduct() {
+        var product = new Object();
+        product.ProductID = $("#inputId").val();
+        product.ProductName = $("#inputName").val();
+        product.Availability = $("#inputCount").val();
+        if(product.ProductID=="")
+        {
+            $("#errorId").removeClass("hidden");
+        }
+         else if(product.ProductName=="")
+        {
+            $("#errorId").addClass("hidden");
+            $("#errorName").removeClass("hidden");
+        }
+        else if(product.Availability=="")
+        {
+            $("#errorId").addClass("hidden");
+            $("#errorName").addClass("hidden");
+            $("#errorCount").removeClass("hidden");
+        }
+        else
+     {
+       $("#errorId").addClass("hidden");
+       $("#errorName").addClass("hidden");
+       $("#errorCount").addClass("hidden");
+        var data = JSON.stringify({
+            product: product
+        });
+        return $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'POST',
+            url: "/Data/SaveProduct",
+            data: data,
+            success: function (result) {
+                if (result == true) {
+                    GetAllProducts();
+                    Reset();
+                    alert("Save Success!");
+                }
+                else {
+                    alert("Save failed!Duplicate ProductID");
+                }
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+      }
+    }
+
+
+    //ajax call to Data Controller to get all products from database
+    function GetAllProducts() {
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'Get',
+            url: "/Data/getData",
+            success: function (data) {
+                $("#trDiv").html('');
+                var tdContent = '';
+                for(var i = 0; i < data.length; i++)
+                {
+                     tdContent += '<tr><td>' + data[i].ProductID + '</td><td>' + data[i].ProductName + '</td>' + '<td>' + data[i].Availability + '</td>' + '<td><a href="#" onclick="Edit(' + data[i].ProductID + ",'" + data[i].ProductName + "','" + data[i].Availability + "','" + data[i].Availability + "'," + data[i].Availability + ');">Edit</a>'+ "     " +'<a href="#" onclick="Delete(' + data[i].ProductID + ",'" + data[i].ProductName + "','" + data[i].Availability + "','" + data[i].Availability + "'," + data[i].Availability + ');">Delete</a></td></tr>'; // if Name is property of your Person object
+
+                }
+                $("#trDiv").append(tdContent);
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+    //Function called when edit link is clicked to populate the input fields with respective product
+      function Edit(ProductID, ProductName, Availability,Availability1,Availability2) {
+        $("#inputId").val(ProductID);
+        $("#inputId").attr("disabled","disabled");
+        $("#inputName").val(ProductName);
+        $("#inputCount").val(Availability);
+    }
+    //ajax call to controller to delete data from database
+    function Delete(ProductID, ProductName, Availability,Availability1,Availability2) {
+     var product = new Object();
+        product.ProductID = ProductID;
+        var data = JSON.stringify({
+            product: product
+        });
+        return $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'POST',
+            url: "/Data/DeleteProduct",
+            data: data,
+            success: function (result) {
+                if (result == true) {
+                    GetAllProducts();
+                    Reset();
+                    alert("Delete Success!");
+                }
+                else {
+                    alert("Delete failed!");
+                }
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+    function Reset() {
+      $("#inputId").removeAttr("disabled");
+        $("#inputId").val(null);
+        $("#inputName").val(null);
+        $("#inputCount").val(null);
+    }
+</script>
+

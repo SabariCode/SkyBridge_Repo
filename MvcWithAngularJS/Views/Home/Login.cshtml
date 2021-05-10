@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+<style>
+    input {
+        padding: 5px;
+        border: 1px solid black;
+        margin-left: 10px;
+        margin-bottom: 10px;
+    }
+
+        input.ng-dirty.ng-invalid {
+            border: 1px solid red;
+            background-color: white;
+        }
+
+    .error {
+        color: red;
+    }
+</style>
+
+<div ng-controller="LoginController">
+    <h2 ng-show="!IsLoggedIn">Login Page</h2>
+    <form novalidate name="lf" ng-submit="Login()">
+        <h2 ng-show="IsLoggedIn">{{Message}}!</h2>
+        <p ng-show="IsLoggedIn">Click on the button below to display the list of products or add a new product</p>
+        <table ng-show="!IsLoggedIn">
+            <tr>
+                <td>UserName :</td>
+                <td>
+                    <input type="text" ng-model="LoginData.Username" name="cUsername" ng-class="Submitted?'ng-dirty':''" required autofocus />
+                    <span class="error" ng-show="(lf.sUsername.$dirty || Submitted) && lf.cUsername.$error.required">Username required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Password :</td>
+                <td>
+                    <input type="password" ng-model="LoginData.Password" name="cPassword" ng-class="Submitted?'ng-dirty':''" required autofocus />
+                    <span class="error" ng-show="(lf.cPassword.$dirty || Submitted) && lf.cPassword.$error.required">Password required</span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Login" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div ng-show="IsLoggedIn">
+        <div>
+            <a href="~/Data/AddProduct" class="btn btn-primary">Display/Add Product</a>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/LoginController.js"></script>
+}
+
+
